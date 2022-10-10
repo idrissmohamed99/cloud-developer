@@ -1,10 +1,10 @@
-import { todosAccess } from './todosAcess'
+import * as uuid from 'uuid';
+import { TodoItem } from '../models/TodoItem';
+import { CreateTodoRequest } from '../requests/CreateTodoRequest';
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
+import { createLogger } from '../utils/logger';
 import { attachmentUtils } from './attachmentUtils';
-import { TodoItem } from '../models/TodoItem'
-import { CreateTodoRequest } from '../requests/CreateTodoRequest'
-import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
-import { createLogger } from '../utils/logger'
-import * as uuid from 'uuid'
+import { todosAccess } from './todosAcess';
 // import * as createError from 'http-errors'
 
 // TODO: Implement businessLogic
@@ -43,7 +43,7 @@ export async function deleteTodo(userId: string, todoId: string): Promise<void> 
     await todoAccess.deleteTodo(userId, todoId)
 }
 
-export async function getAllTodos(userId: string): Promise<TodoItem[]> {
+export async function getAllTodos(userId: string) {
     const todos = await todoAccess.getAllTodos(userId)
 
     console.log(todos)
