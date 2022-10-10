@@ -36,8 +36,8 @@ export const handler = middy(
 
 
     return {
-      statusCode: 200,
-      body: ''
+      statusCode: 201,
+      body: JSON.stringify(updatedTodo),
     }
   })
 
