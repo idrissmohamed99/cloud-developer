@@ -53,9 +53,6 @@ export async function getAllTodos(userId: string): Promise<TodoItem[]> {
 
 
 
-export async function createAttachmentPresignedUrl(userId: string, todoId: string): Promise<string | null> {
-
-    const item = await todoAccess.findById(userId, todoId)
-    if (!item) { return null }
+export async function createAttachmentPresignedUrl(todoId: string): Promise<string | null> {
     return await attachmentUtil.getUploadUrl(todoId)
 }
