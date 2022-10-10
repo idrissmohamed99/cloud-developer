@@ -1,8 +1,8 @@
-import * as AWS from 'aws-sdk'
+import * as AWS from 'aws-sdk';
 
-import { DocumentClient } from 'aws-sdk/clients/dynamodb'
-import { createLogger } from '../utils/logger'
-import { TodoItem } from '../models/TodoItem'
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { createLogger } from '../utils/logger';
+import { TodoItem } from '../models/TodoItem';
 import { TodoUpdate } from '../models/TodoUpdate';
 
 const AWSXRay = require('aws-xray-sdk');
@@ -22,7 +22,7 @@ export class todosAccess {
 
   ) { }
 
-  async getAllTodos(userId: string): Promise<TodoItem[]> {
+  async getAllTodos(userId: string) {
     const result = await this.docClient.query({
 
       TableName: this.todosTable,
@@ -34,7 +34,7 @@ export class todosAccess {
       }
     }).promise()
 
-    return result.Items as TodoItem[]
+    return result
   }
 
   async createTodo(todo: TodoItem): Promise<TodoItem> {
@@ -47,7 +47,7 @@ export class todosAccess {
     return todo as TodoItem
   }
 
-  async findById(userId: string, todoId: string): Promise<TodoItem | null> {
+  async findById(todoId: string, userId: string): Promise<TodoItem | null> {
     const result = await this.docClient.query({
       TableName: this.todosTable,
       IndexName: this.indexName,
@@ -67,21 +67,20 @@ export class todosAccess {
 
   }
 
-  async updateTodo(userId: string, todoId: string, updateTodo: TodoUpdate): Promise<boolean> {
-    const todo = await this.findById(userId, todoId)
+  async updateTodo(todoId: string,userId: string, updateTodo: TodoUpdate): Promise<boolean> {
+    const todo = await this.findById(todoId,userId);
     if (!todo) {
       return false
     }
-    const createAt = todo.createdAt
     await this.docClient.update({
       TableName: this.todosTable,
-      Key: { userId, createAt },
+      Key: { userId, todoId },
       UpdateExpression:
         'set itemName = :itemName , dueDate = :dueDate ,done = :done',
       ExpressionAttributeValues: {
-        'itemName': updateTodo.name,
-        'dueDate': updateTodo.dueDate,
-        'done': updateTodo.done,
+        ':itemName': updateTodo.name,
+        ':dueDate': updateTodo.dueDate,
+        ':done': updateTodo.done,
 
       }
 
@@ -91,10 +90,6 @@ export class todosAccess {
   }
 
   async deleteTodo(userId: string, todoId: string): Promise<void> {
-    const todo = await this.findById(userId, todoId)
-    if (!todo) {
-      return
-    }
 
     await this.docClient.delete({
       TableName: this.todosTable, Key: {

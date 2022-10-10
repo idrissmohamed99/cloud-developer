@@ -1,4 +1,4 @@
-import * as AWS from 'aws-sdk'
+import * as AWS from 'aws-sdk';
 
 const AWSXRay = require('aws-xray-sdk');
 const XAWS = AWSXRay.captureAWS(AWS)
@@ -22,7 +22,7 @@ export class attachmentUtils {
                 Bucket: this.bucket,
                 Key: todoId
             })
-            .promise()
+                .promise()
 
             return true
 
@@ -36,7 +36,7 @@ export class attachmentUtils {
         return this.s3.getSignedUrl('putObject', {
             Bucket: this.bucket,
             Key: todoId,
-            Expires: this.expires
+            Expires: Number(this.expires)
         })
     }
 
