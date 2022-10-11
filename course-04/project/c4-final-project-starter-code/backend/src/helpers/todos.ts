@@ -23,7 +23,9 @@ export async function createTodo(userId: string, createTodoRequest: CreateTodoRe
         todoId,
         createdAt: new Date().toISOString(),
         dueDate: createTodoRequest.dueDate,
-        done: false
+        done: false,
+        attachmentUrl: `https://${s3}.s3.amazonaws.com/${todoId}`,
+          ...createTodoRequest
 
     })
 
