@@ -11,11 +11,13 @@ import * as uuid from 'uuid'
 const todoAccess = new todosAccess()
 const attachmentUtil = new attachmentUtils()
 const logger = createLogger('todos')
+const s3 = process.env.ATTACHMENT_S3_BUCKET
+
+
 export async function createTodo(userId: string, createTodoRequest: CreateTodoRequest): Promise<TodoItem> {
-
-
     const todoId = uuid.v4()
     logger.info('Create new Todo', { userId })
+
 
     return await todoAccess.createTodo({
         name: createTodoRequest.name,
@@ -25,7 +27,7 @@ export async function createTodo(userId: string, createTodoRequest: CreateTodoRe
         dueDate: createTodoRequest.dueDate,
         done: false,
         attachmentUrl: `https://${s3}.s3.amazonaws.com/${todoId}`,
-          ...createTodoRequest
+        ...createTodoRequest
 
     })
 
@@ -45,7 +47,7 @@ export async function getAllTodos(userId: string) {
     const todos = await todoAccess.getAllTodos(userId)
 
     console.log(todos)
-    return todos 
+    return todos
 }
 
 

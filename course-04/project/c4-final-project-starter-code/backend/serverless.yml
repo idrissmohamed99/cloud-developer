@@ -4,7 +4,6 @@ app: serverless-todo-app-ahmedhussin
 service: serverless-todo-app-ahmedhussin
 
 disabledDeprecations:
-  - CODE_1 # To disable specific deprecation with code "CODE_1"
   - "*" # To disable all deprecation messages
 plugins:
   - serverless-webpack
@@ -17,16 +16,39 @@ custom:
   documentation:
     api:
       info:
-        version: v1.0.0
-        title: todo-ahmedhussin-backend
-        description: Serverless application for todo
+        version: '1.0.0'
+        title: serverless-api
+        description: serverless-api
     models:
       - name: CreateTodoRequest
-        contentType: application/json
-        schema: ${file(models/create-todo-model.json)}
+        contentType: "application/json"
+        schema:
+          required:
+            - name
+            - dueDate
+          properties:
+            name:
+              minLength: 1
+              type: string
+            dueDate:
+              type: string
       - name: UpdateTodoRequest
-        contentType: application/json
-        schema: ${file(models/update-todo-model.json)}
+        contentType: "application/json"
+        schema:
+          required:
+            - name
+            - dueDate
+            - done
+          properties:
+            name:
+              minLength: 1
+              type: string
+            dueDate:
+              type: string
+            done:
+              type: boolean
+  
+  
 
 provider:
   name: aws
@@ -93,19 +115,16 @@ functions:
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
-          request:
-            schemas:
-              application/json: ${file(models/create-todo-model.json)}
+          documentation:
+            summary: "Create a new todo "
+            description: "Create a new todo "
+            requestModels:
+              "application/json": CreateTodoRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-      - Effect: Allow
-        Action:
-          - xray:PutTraceSegments
-        Resource:
-          - "*"
   # TODO: Configure this function
   # Provide property for setting up CORS, Authorizer, iamRoleStatements, and request schemas
   UpdateTodo:
